@@ -1,3 +1,4 @@
+package com.dzuu.portal
 
 import android.os.Bundle
 import android.widget.Button
@@ -12,14 +13,13 @@ class MainActivity : AppCompatActivity() {
     private var webServer: LocalWebServer? = null
     private var isRunning = false
 
-    private lateinit class LocalWebServer(val activity: MainActivity, port: Int) : NanoHTTPD(port) {
+    private class LocalWebServer(val activity: MainActivity, port: Int) : NanoHTTPD(port) {
         override fun serve(session: IHTTPSession): Response {
             val uri = session.uri
             activity.runOnUiThread {
                 activity.appendLog("Target akses: $uri")
             }
 
-            // Ambil HTML dari inputan user secara real-time
             var htmlContent = ""
             activity.runOnUiThread {
                 val edt = activity.findViewById<EditText>(R.id.edtHtml)
@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         btnToggle.setOnClickListener {
             if (!isRunning) {
                 try {
-                    // Jalankan server di port 8080 (bisa diakses via http://IP_HP:8080)
                     webServer = LocalWebServer(this, 8080)
                     webServer?.start()
                     isRunning = true
